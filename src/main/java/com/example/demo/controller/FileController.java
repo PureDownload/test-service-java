@@ -2,6 +2,9 @@ package com.example.demo.controller;
 
 import com.example.demo.model.MultipartFileParam;
 import com.example.demo.util.FileUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.io.FileUtils;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +31,7 @@ import java.util.UUID;
 @RequestMapping("/file")
 @RestController
 @CrossOrigin
+@Api(tags = {"文件接口"},description = "文件接口类")
 public class FileController {
 
     private static String fileUploadTempDir = "D:/file/fileuploaddir";
@@ -39,7 +43,8 @@ public class FileController {
      * @description  续传接口
      */
     @PostMapping("/resume")
-    public Map resume(HttpServletRequest req) throws Exception {
+    @ApiOperation(value = "续传接口",notes = "file对象从request中获取")
+    public Map resume(@ApiParam(name = "req",value = "request对象",required = true) HttpServletRequest req) throws Exception {
         // 获取需要用到的信息
         MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) req; // 获取请求对象
         MultipartFile file = multipartHttpServletRequest.getFile("data"); // 获取分片的数据文件
@@ -148,7 +153,7 @@ public class FileController {
      */
     @RequestMapping(value = "/merge", method = RequestMethod.GET)
     @ResponseBody
-    public Map merge(String uuid, String newFileName) {
+    public Map merge(@ApiParam(name = "uuid",value = "UUID",required = true) String uuid, String newFileName) {
         Map retMap = new HashMap();
         try {
             File dirFile = new File(fileUploadTempDir + "/" + uuid);
